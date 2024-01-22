@@ -6,11 +6,11 @@ public class Main {
 
     public static void main(String[] args) {
 	Scanner scan = new Scanner(System.in);
-	
+
 	// Initializing a list of 10 ints
 	Integer[] numList = new Integer[10];
 	int inputNum = 0;
-	
+
 	// using a while loop since it may run an unknown number of times
 	while (inputNum < 10) {
 	    System.out.print("Enter integer " + (inputNum + 1) + ": ");
@@ -22,11 +22,11 @@ public class Main {
 		System.out.println("Invalid integer.");
 	    }
 	}
-	
+
 	double inputSum = 0;
 	// using print() to start the list of numbers
 	System.out.print("The numbers are: ");
-	
+
 	for (int i = 0; i < numList.length; i++) {
 	    // adds all numbers in the list to one sum
 	    inputSum += numList[i];
@@ -37,10 +37,10 @@ public class Main {
 		System.out.print(numList[i] + ", ");
 	    }
 	}
-	
+
 	// calculates average
 	double average = inputSum / numList.length;
-	
+
 	System.out.println("The average is: " + average);
     }
 
