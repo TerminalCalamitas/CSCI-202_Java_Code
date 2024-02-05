@@ -77,8 +77,8 @@ public class Gameboard {
 		// Same boolean input method as before, but with a different question
 		boolean mineGuess = getBooleanInput("Does row " + row + " and column " + col + " contain a mine?");
 		// Guess not mine and isn't mine, or guess is mine and cell is a mine
-		if (mineGuess == board[row][col].getCellValue().equals("M")) {
-			board[row][col].flip(board, row, col);
+		if (mineGuess == board[row - 1][col - 1].getCellValue().equals("M")) {
+			board[row - 1][col - 1].flip(board, row, col);
 
 			if (checkWin()) {
 				System.out.println("You win!");
@@ -127,7 +127,7 @@ public class Gameboard {
 	private boolean validIntInput(String input) { // Makes sure input is a number and is in the board
 		try {
 			int row = Integer.parseInt(input);
-			return row < board.length && row >= 0;
+			return row <= board.length && row > 0;
 		} catch (Exception e) {
 			return false;
 		}
