@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"edu.unca.csci202","l":"Cell"},{"p":"edu.unca.csci202","l":"Gameboard"},{"p":"edu.unca.csci202","l":"Minesweeper"}];updateSearchResults();
