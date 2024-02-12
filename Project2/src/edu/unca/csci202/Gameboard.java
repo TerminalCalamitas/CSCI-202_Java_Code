@@ -4,24 +4,29 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
+ * Most of the core logic for the Minesweeper Game.
+ * 
  * @author Caleb Knapp
  */
 public class Gameboard {
+	/** 2d array of Cell objects. */
 	private Cell[][] board;
+	/** Scanner for player input. */
 	private Scanner input;
+	/** A boolean on if the game has finished. */
 	private boolean gameOver;
+	/** Certain code will only execute if it is the first game. */
 	private boolean firstGame = true;
 
 	/**
-	 * 
+	 * The constructor initializes the input Scanner.
 	 */
 	public Gameboard() {
 		input = new Scanner(System.in);
-
 	}
 
 	/**
-	 * 
+	 * Method that starts off the game logic.
 	 */
 	public void run() {
 		gameOver = false;
@@ -57,7 +62,7 @@ public class Gameboard {
 	}
 
 	/**
-	 * 
+	 * Creates board of 8x8 Cells then calls methods to fill them.
 	 */
 	private void prepBoard() {
 		// Setting up object variables
@@ -113,7 +118,7 @@ public class Gameboard {
 
 	/**
 	 * 
-	 * @param question
+	 * @param question A string of the question ending in a question mark.
 	 * @return
 	 */
 	private boolean getBooleanInput(String question) {

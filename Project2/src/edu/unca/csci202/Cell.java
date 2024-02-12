@@ -1,6 +1,8 @@
 package edu.unca.csci202;
 
 /**
+ * Provides a cell that has a value and visibility indicator.
+ * 
  * @author Caleb Knapp
  */
 public class Cell {
@@ -8,7 +10,7 @@ public class Cell {
 	private boolean visible;
 
 	/**
-	 * 
+	 * A new Cell starts as blank and hidden.
 	 */
 	public Cell() {
 		// Default value is nothing and not flipped
@@ -17,10 +19,11 @@ public class Cell {
 	}
 
 	/**
+	 * Changes a hidden spot to a visible one and calculates the Cell's value.
 	 * 
-	 * @param board
-	 * @param row
-	 * @param col
+	 * @param board A 2d array of Cell objects that contains the Cell.
+	 * @param row   int 1 to 8 for the row of the Cell.
+	 * @param col   int 1 to 8 for the column of the Cell.
 	 */
 	public void flip(Cell[][] board, int row, int col) {
 		// Don't need to count mines if flipping a mine
@@ -45,9 +48,10 @@ public class Cell {
 	}
 
 	/**
+	 * Variable toString based on the boolean input.
 	 * 
-	 * @param peak
-	 * @return
+	 * @param peak A boolean value to override a cell being hidden.
+	 * @return Returns the value of the cell if it is visible or if peak is true.
 	 */
 	public String toString(boolean peak) {
 		// If player is peaking or the cell has been flipped, print value, otherwise
@@ -61,32 +65,36 @@ public class Cell {
 	}
 
 	/**
+	 * Gets the value of the cell regardless of it being visible or not.
 	 * 
-	 * @return
+	 * @return String of length 1 being "M" or "-"
 	 */
 	public String getCellValue() {
 		return cellValue;
 	}
 
 	/**
+	 * Sets the cell value to the input character.
 	 * 
-	 * @param cellValue
+	 * @param cellValue Should be a single character
 	 */
 	public void setCellValue(String cellValue) {
 		this.cellValue = cellValue;
 	}
 
 	/**
+	 * Checks if cell is visible.
 	 * 
-	 * @return
+	 * @return returns a boolean
 	 */
 	public boolean isVisible() {
 		return visible;
 	}
 
 	/**
+	 * Changes visibility.
 	 * 
-	 * @param visible
+	 * @param visible boolean to set visibility.
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
