@@ -2,6 +2,7 @@ package edu.unca.csci202;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Stack;
 
 /**
  * Most of the core logic for the Minesweeper Game.
@@ -17,12 +18,14 @@ public class Gameboard {
 	private boolean gameOver;
 	/** Certain code will only execute if it is the first game. */
 	private boolean firstGame = true;
+	private Stack<Cell> stack;
 
 	/**
 	 * The constructor initializes the input Scanner.
 	 */
 	public Gameboard() {
 		input = new Scanner(System.in);
+		stack = new Stack<Cell>();
 	}
 
 	/**
@@ -70,14 +73,58 @@ public class Gameboard {
 
 		// Setting up the board
 		board = new Cell[8][8];
-		fillBoard();
 		placeMines();
+		calculateValues();
+
 	}
 
 	/**
-	 * 
+	 * Randomly places 10 mines on the board.
 	 */
-	// I tried to make this funtion as simple as possible
+	private void placeMines() {
+		Random rand = new Random();
+		int minesPlaced = 0;
+		while (minesPlaced < 10) {
+			int x = rand.nextInt(8);
+			int y = rand.nextInt(8);
+			// Only places mine if space is not already a mine
+			if (board[x][y] == null) {
+				board[x][y] = new Cell();
+				board[x][y].setCellValue("M");
+				minesPlaced++;
+			}
+		}
+	}
+
+	private void calculateValues() {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				if (board[i][j] == null) {
+					board[i][j] = new Cell();
+					board[i][j].setCellValue(getNeighbors(board, i, j));
+				}
+			}
+		}
+
+	}
+
+	private String getNeighbors(Cell[][] board, int row, int col) {
+		int mineCount = 0;
+		for (int i = row - 1; i < row + 1; i++) {
+			for (int j = col - 1; j < col + 1; j++) {
+				if (validIntInput("" + i) && validIntInput("" + j) && board[i][j] != null
+						&& board[i][j].getCellValue().equals("M")) {
+					mineCount++;
+				}
+			}
+		}
+		return "" + mineCount;
+	}
+
+	/**
+	 * Gets the player's input and flips the correct cell.
+	 */
+	// I tried to make this function as simple as possible
 	private void playerTurn() {
 		int row = -1;
 		int col = -1;
@@ -97,8 +144,12 @@ public class Gameboard {
 		// Same boolean input method as before, but with a different question
 		boolean mineGuess = getBooleanInput("Does row " + row + " and column " + col + " contain a mine?");
 		// Guess not mine and isn't mine, or guess is mine and cell is a mine
-		if (mineGuess == board[row - 1][col - 1].getCellValue().equals("M")) {
-			board[row - 1][col - 1].flip(board, row, col);
+		Cell boardLocation = board[row - 1][col - 1];
+		if (mineGuess == boardLocation.getCellValue().equals("M")) {
+			board[row - 1][col - 1].flip();
+			if (boardLocation.getCellValue().equals("0")) {
+				expand(row - 1, col - 1);
+			}
 
 			if (checkWin()) {
 				System.out.println("You win!");
@@ -117,9 +168,10 @@ public class Gameboard {
 	// be called from anywhere
 
 	/**
+	 * Gets a y or n input.
 	 * 
 	 * @param question A string of the question ending in a question mark.
-	 * @return
+	 * @return Returns the boolean that the player enters.
 	 */
 	private boolean getBooleanInput(String question) {
 		System.out.print(question + " (y/n): ");
@@ -136,9 +188,10 @@ public class Gameboard {
 	}
 
 	/**
+	 * Gets an integer input between 1 and 8.
 	 * 
-	 * @param inputTitle
-	 * @return
+	 * @param inputTitle The name of what needs an integer.
+	 * @return Returns a number between 1 and 8.
 	 */
 	private int getIntInput(String inputTitle) {
 		System.out.print("Please enter a " + inputTitle + " number: ");
@@ -155,9 +208,10 @@ public class Gameboard {
 	}
 
 	/**
+	 * Makes sure given number is in range of the board.
 	 * 
-	 * @param input
-	 * @return
+	 * @param input An integer as a string.
+	 * @return Boolean of if the number is in the range of the board.
 	 */
 	private boolean validIntInput(String input) { // Makes sure input is a number and is in the board
 		try {
@@ -168,9 +222,25 @@ public class Gameboard {
 		}
 	}
 
+	private void expand(int row, int col) {
+		stack.push(board[row][col]);
+		while (!stack.isEmpty()) {
+			for (int i = -1; i <= 1; i++) {
+				for (int j = -1; j <= 1; j++) {
+					if (validIntInput("" + (row + i)) && validIntInput("" + (col + j))
+							&& board[row + i][col + j].equals("0") && !board[row + i][col + j].isVisible()) {
+						stack.push(board[row + i][col + j]);
+					}
+				}
+			}
+
+		}
+	}
+
 	/**
+	 * Checks if the game is at a winning state.
 	 * 
-	 * @return
+	 * @return A boolean on if all mines are visible.
 	 */
 	private boolean checkWin() {
 		for (int i = 0; i < board.length; i++) {
@@ -186,40 +256,13 @@ public class Gameboard {
 	}
 
 	/**
+	 * A method to print the board with or without hiding the values of the squares.
 	 * 
-	 */
-	private void fillBoard() {
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[i].length; j++) {
-				board[i][j] = new Cell();
-			}
-		}
-	}
-
-	/**
-	 * 
-	 */
-	private void placeMines() {
-		Random rand = new Random();
-		int minesPlaced = 0;
-		while (minesPlaced < 10) {
-			int x = rand.nextInt(8);
-			int y = rand.nextInt(8);
-			// Only places mine if space is not already a mine
-			if (!board[x][y].getCellValue().equals("M")) {
-				board[x][y].setCellValue("M");
-				minesPlaced++;
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @param peak
-	 * @return
+	 * @param peak If true, will print spaces even if they are hidden.
+	 * @return Returns the board as a string.
 	 */
 	public String toString(boolean peak) {
-		// Initialize boardString so we can add chaaracters to it
+		// Initialize boardString so we can add characters to it
 		String boardString = "";
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {

@@ -6,7 +6,9 @@ package edu.unca.csci202;
  * @author Caleb Knapp
  */
 public class Cell {
+	/** A string that is the cell's value, either a number or M. */
 	private String cellValue;
+	/** Boolean on if the cell's value should be printed by default. */
 	private boolean visible;
 
 	/**
@@ -19,31 +21,9 @@ public class Cell {
 	}
 
 	/**
-	 * Changes a hidden spot to a visible one and calculates the Cell's value.
-	 * 
-	 * @param board A 2d array of Cell objects that contains the Cell.
-	 * @param row   int 1 to 8 for the row of the Cell.
-	 * @param col   int 1 to 8 for the column of the Cell.
+	 * Changes a hidden spot to a visible one.
 	 */
-	public void flip(Cell[][] board, int row, int col) {
-		// Don't need to count mines if flipping a mine
-		if (this.getCellValue().equals("M")) {
-			visible = true;
-			return;
-		}
-		int mineCount = 0;
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				// Check to make sure the space being checked is in the board
-				if (row + i > board.length - 1 || row + i < 0 || col + j > board.length - 1 || col + j < 0) {
-				} else if (board[row + i][col + j].getCellValue().equals("M")) {
-					// If cell is a mine, add 1 to mine count
-					mineCount++;
-				}
-			}
-		}
-		// Setting cell value to number of surrounding mines
-		cellValue = "" + mineCount;
+	public void flip() {
 		visible = true;
 	}
 
