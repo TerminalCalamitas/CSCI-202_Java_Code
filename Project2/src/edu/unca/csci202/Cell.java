@@ -10,13 +10,20 @@ public class Cell {
 	private String cellValue;
 	/** Boolean on if the cell's value should be printed by default. */
 	private boolean visible;
+	private int row;
+	private int col;
 
 	/**
-	 * A new Cell starts as blank and hidden.
+	 * A new Cell starts as next to zero mines and hidden.
+	 * 
+	 * @param row Integer 0 to 7 of the Cell row.
+	 * @param col Integer 0 to 7 of the Cell column.
 	 */
-	public Cell() {
-		// Default value is nothing and not flipped
-		cellValue = "-";
+	public Cell(int row, int col) {
+		this.row = row;
+		this.col = col;
+
+		cellValue = "0";
 		visible = false;
 	}
 
@@ -31,7 +38,7 @@ public class Cell {
 	 * Variable toString based on the boolean input.
 	 * 
 	 * @param peak A boolean value to override a cell being hidden.
-	 * @return Returns the value of the cell if it is visible or if peak is true.
+	 * @return The value of the cell if it is visible or if peak is true.
 	 */
 	public String toString(boolean peak) {
 		// If player is peaking or the cell has been flipped, print value, otherwise
@@ -63,9 +70,27 @@ public class Cell {
 	}
 
 	/**
+	 * Gets the Cell's Column.
+	 * 
+	 * @return An integer between 0 and 7.
+	 */
+	public int getRow() {
+		return row;
+	}
+
+	/**
+	 * Gets the Cell's Column.
+	 * 
+	 * @return An integer between 0 and 7.
+	 */
+	public int getCol() {
+		return col;
+	}
+
+	/**
 	 * Checks if cell is visible.
 	 * 
-	 * @return returns a boolean
+	 * @return Boolean of the Cell's visibility
 	 */
 	public boolean isVisible() {
 		return visible;
@@ -74,7 +99,7 @@ public class Cell {
 	/**
 	 * Changes visibility.
 	 * 
-	 * @param visible boolean to set visibility.
+	 * @param visible Boolean to set visibility to.
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;

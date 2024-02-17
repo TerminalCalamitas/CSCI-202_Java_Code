@@ -10,12 +10,13 @@ public class RPNCalculator {
 
 	// stack used to process RPN expression
 	private Stack<Double> calcStack;
+	// Boolean so that only one error prints.
+	private boolean error;
 
 	/**
-	 * Constructor, initializes empty stack
+	 * Just a Constructor
 	 */
 	public RPNCalculator() {
-		calcStack = new Stack<Double>();
 	}
 
 	/**
@@ -49,6 +50,10 @@ public class RPNCalculator {
 	 * @return true if the user wants to quit
 	 */
 	private boolean interpretExpression(String line) {
+		// Reseting instance variables
+		calcStack = new Stack<Double>();
+		error = false;
+
 		Scanner lineParser = new Scanner(line);
 		String token = "";
 		boolean quit = false;
@@ -61,6 +66,7 @@ public class RPNCalculator {
 
 			if (token.equals("+")) {
 				if (calcStack.size() < 2) {
+					error = true;
 					printError("not enough operands");
 				} else {
 					double num1 = calcStack.pop();
@@ -70,6 +76,7 @@ public class RPNCalculator {
 				continue;
 			} else if (token.equals("-")) {
 				if (calcStack.size() < 2) {
+					error = true;
 					printError("not enough operands");
 				} else {
 					double num1 = calcStack.pop();
@@ -79,6 +86,7 @@ public class RPNCalculator {
 				continue;
 			} else if (token.equals("*")) {
 				if (calcStack.size() < 2) {
+					error = true;
 					printError("not enough operands");
 				} else {
 					double num1 = calcStack.pop();
@@ -88,6 +96,7 @@ public class RPNCalculator {
 				continue;
 			} else if (token.equals("/")) {
 				if (calcStack.size() < 2) {
+					error = true;
 					printError("not enough operands");
 
 				} else {
@@ -98,16 +107,20 @@ public class RPNCalculator {
 				continue;
 			}
 
+			if (token.equals("q")) {
+				quit = true;
+				continue;
+			}
+
 			try {
 				calcStack.push(Double.parseDouble(token));
 			} catch (Exception e) {
+				error = true;
+				error = true;
 				printError("unrecognized token");
 				break;
 			}
 
-			if (token.equals("q")) {
-				quit = true;
-			}
 		}
 		return quit;
 	}
@@ -125,13 +138,14 @@ public class RPNCalculator {
 	/**
 	 * Pop the result off the stack and print it
 	 * 
-	 * @param quit
+	 * @param quit Won't print if quitting the program
 	 */
 	private void printResult(boolean quit) {
 		if (!quit) {
-			if (calcStack.size() != 1) {
+			// Won't print an error if there already is one
+			if (calcStack.size() != 1 && !error) {
 				printError("too many operands");
-			} else {
+			} else if (!error) {
 				System.out.println(calcStack.pop());
 			}
 		}

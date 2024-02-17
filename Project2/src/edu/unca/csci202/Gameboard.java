@@ -18,14 +18,12 @@ public class Gameboard {
 	private boolean gameOver;
 	/** Certain code will only execute if it is the first game. */
 	private boolean firstGame = true;
-	private Stack<Cell> stack;
 
 	/**
-	 * The constructor initializes the input Scanner.
+	 * Initializes the input Scanner.
 	 */
 	public Gameboard() {
 		input = new Scanner(System.in);
-		stack = new Stack<Cell>();
 	}
 
 	/**
@@ -65,7 +63,8 @@ public class Gameboard {
 	}
 
 	/**
-	 * Creates board of 8x8 Cells then calls methods to fill them.
+	 * Creates board of 8x8 Cells then calls methods to fill them with appropriate
+	 * values.
 	 */
 	private void prepBoard() {
 		// Setting up object variables
@@ -89,30 +88,40 @@ public class Gameboard {
 			int y = rand.nextInt(8);
 			// Only places mine if space is not already a mine
 			if (board[x][y] == null) {
-				board[x][y] = new Cell();
+				board[x][y] = new Cell(x, y);
 				board[x][y].setCellValue("M");
 				minesPlaced++;
 			}
 		}
 	}
 
+	/**
+	 * Loops through full board and sets the cell values accordingly.
+	 */
 	private void calculateValues() {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
 				if (board[i][j] == null) {
-					board[i][j] = new Cell();
-					board[i][j].setCellValue(getNeighbors(board, i, j));
+					board[i][j] = new Cell(i, j);
+					board[i][j].setCellValue(getNeighbors(i, j));
 				}
 			}
 		}
-
 	}
 
-	private String getNeighbors(Cell[][] board, int row, int col) {
+	/**
+	 * Calculates how many mines neighbor a cell.
+	 * 
+	 * @param row The row of the Cell to calculate the value of.
+	 * @param col The column of the Cell to calculate the value of.
+	 * @return A string of the number of neighboring mines.
+	 */
+	private String getNeighbors(int row, int col) {
 		int mineCount = 0;
-		for (int i = row - 1; i < row + 1; i++) {
-			for (int j = col - 1; j < col + 1; j++) {
-				if (validIntInput("" + i) && validIntInput("" + j) && board[i][j] != null
+		for (int i = row - 1; i <= row + 1; i++) {
+			for (int j = col - 1; j <= col + 1; j++) {
+				// Makes sure cell is in board, not null, and is a mine
+				if (validIntInput("" + (i + 1)) && validIntInput("" + (j + 1)) && board[i][j] != null
 						&& board[i][j].getCellValue().equals("M")) {
 					mineCount++;
 				}
@@ -146,9 +155,11 @@ public class Gameboard {
 		// Guess not mine and isn't mine, or guess is mine and cell is a mine
 		Cell boardLocation = board[row - 1][col - 1];
 		if (mineGuess == boardLocation.getCellValue().equals("M")) {
-			board[row - 1][col - 1].flip();
+
 			if (boardLocation.getCellValue().equals("0")) {
 				expand(row - 1, col - 1);
+			} else {
+				board[row - 1][col - 1].flip();
 			}
 
 			if (checkWin()) {
@@ -222,14 +233,32 @@ public class Gameboard {
 		}
 	}
 
+	/**
+	 * Loops around a Cell of value 0 and flips all their neighbors, adding any
+	 * other neighboring cells if they have a value of 0.
+	 * 
+	 * @param row Integer representing row of the first 0 space.
+	 * @param col Integer representing column of the first 0 space.
+	 */
 	private void expand(int row, int col) {
+		// If a cell is visible we don't need too expand.
+		if (board[row][col].isVisible()) {
+			return;
+		}
+		Stack<Cell> stack = new Stack<Cell>();
 		stack.push(board[row][col]);
+
 		while (!stack.isEmpty()) {
-			for (int i = -1; i <= 1; i++) {
-				for (int j = -1; j <= 1; j++) {
-					if (validIntInput("" + (row + i)) && validIntInput("" + (col + j))
-							&& board[row + i][col + j].equals("0") && !board[row + i][col + j].isVisible()) {
-						stack.push(board[row + i][col + j]);
+			Cell currentCell = stack.pop();
+			currentCell.flip();
+
+			// Only add spaces around a cell if the cell is a 0 space.
+			if (currentCell.getCellValue().equals("0")) {
+				for (int i = currentCell.getRow() - 1; i <= currentCell.getRow() + 1; i++) {
+					for (int j = currentCell.getCol() - 1; j <= currentCell.getCol() + 1; j++) {
+						if (validIntInput("" + (i + 1)) && validIntInput("" + (j + 1)) && !board[i][j].isVisible()) {
+							stack.push(board[i][j]);
+						}
 					}
 				}
 			}
