@@ -58,6 +58,7 @@ public class GroceryStore {
 	 * @param maxItems    The maximum number of items that a customer can have.
 	 */
 	public void run(int timeSteps, double arrivalProb, int processTime, int maxItems) {
+		queues.clear();
 		for (int i = 0; i < this.numQueues; i++) {
 			queues.add(new ArrayDeque<Customer>());
 		}
@@ -79,16 +80,17 @@ public class GroceryStore {
 	 * Loops through all queues and adds customers and processes items.
 	 */
 	public void calcTimeStep() {
+		double arrival = rand.nextDouble();
+		// Adding customer to queue
+		if (arrival <= arrivalProb) {
+			int i = getShortest();
+			queues.get(i).add(new Customer(rand.nextInt(0, maxItems) + 1, processTime));
+			if (queues.get(i).size() > maxLength[i]) {
+				maxLength[i] = queues.get(i).size();
+			}
+		}
 		// looping a time step for each queue
 		for (int i = 0; i < numQueues; i++) {
-			double arrival = rand.nextDouble();
-			// Adding customer to queue
-			if (arrival <= arrivalProb) {
-				queues.get(i).add(new Customer(rand.nextInt(0, maxItems) + 1, processTime));
-				if (queues.get(i).size() > maxLength[i]) {
-					maxLength[i] = queues.get(i).size();
-				}
-			}
 			if (queues.get(i).size() != 0) {
 				// setting up a reference to simplify later code
 				Customer person = queues.get(i).element();
@@ -103,6 +105,23 @@ public class GroceryStore {
 
 		}
 
+	}
+
+	/**
+	 * Returns the index of the shortest line.
+	 * 
+	 * @return shortest queue index.
+	 */
+	private int getShortest() {
+		int minLength = Integer.MAX_VALUE;
+		int index = 0;
+		for (int i = 0; i < numQueues; i++) {
+			if (queues.get(i).size() < minLength) {
+				index = i;
+				minLength = queues.get(i).size();
+			}
+		}
+		return index;
 	}
 
 	/**
