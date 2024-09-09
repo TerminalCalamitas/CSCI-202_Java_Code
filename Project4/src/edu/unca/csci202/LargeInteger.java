@@ -18,9 +18,7 @@ public interface LargeInteger extends Comparable<LargeInteger> {
 
 	public LargeInteger min(LargeInteger other);
 
-	public LargeInteger signum();
-
-	public boolean isNegatve();
+	public int signum();
 
 	public ArrayList<Integer> getValue();
 }
